@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOM Açaiteria - O Açaí mais Cremoso Do Brasil 💜</title>
+    <title>BOOM Açaiteria - O Açaí mais Cremoso da Praia 💜</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,6 +35,11 @@
         }
         .animate-bounce-slow {
             animation: bounce-slow 2s infinite;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #6A0DAD;
+            box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.1);
         }
     </style>
 </head>
@@ -85,13 +90,10 @@
         ];
 
         const PRODUCTS = [
-            // TRADICIONAL
             { id: 1, name: "Copo 300ml", price: 25.00, img: "300ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
             { id: 2, name: "Copo 400ml", price: 30.00, img: "400ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
             { id: 3, name: "Copo 500ml", price: 35.00, img: "500ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
             { id: 4, name: "Copo 700ml", price: 45.00, img: "700ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
-            
-            // ESPECIAL
             { id: 5, name: "Divino Trento", price: 34.00, img: "divino.png", type: "ESPECIAL", category: "Gourmet Especial" },
             { id: 6, name: "Explosão de Oreo", price: 34.00, img: "explosao.png", type: "ESPECIAL", category: "Gourmet Especial" },
             { id: 7, name: "Nobre KitKat", price: 34.00, img: "nobre.png", type: "ESPECIAL", category: "Gourmet Especial" },
@@ -101,11 +103,7 @@
             { id: 11, name: "Maravilhoso KitKat Branco", price: 34.00, img: "maravilhoso.png", type: "ESPECIAL", category: "Gourmet Especial" },
             { id: 12, name: "Esplêndido Stikadinho", price: 34.00, img: "esplendido.png", type: "ESPECIAL", category: "Gourmet Especial" },
             { id: 13, name: "Majestoso Ouro Branco", price: 34.00, img: "majestoso.png", type: "ESPECIAL", category: "Gourmet Especial" },
-
-            // HOTDOG
             { id: 14, name: "Hot Dog Doce", price: 15.00, img: "hotdog.png", type: "HOTDOG", category: "Lanches" },
-
-            // SIMPLE (BEBIDAS)
             { id: 15, name: "Água s/ Gás 500ml", price: 4.00, img: "agua-sem-gas.png", type: "SIMPLE", category: "Bebidas" },
             { id: 16, name: "Água c/ Gás 500ml", price: 4.00, img: "agua-com-gas.png", type: "SIMPLE", category: "Bebidas" },
             { id: 17, name: "Coca Cola 200ml", price: 4.00, img: "coca200ml.png", type: "SIMPLE", category: "Bebidas" },
@@ -126,7 +124,7 @@
             useEffect(() => {
                 const checkStatus = () => {
                     const now = new Date();
-                    const day = now.getDay(); // 0 = Domingo, 1 = Segunda...
+                    const day = now.getDay();
                     const hour = now.getHours();
                     const minutes = now.getMinutes();
                     const currentTime = hour + minutes / 60;
@@ -163,7 +161,7 @@
                     </div>
                     <div className="p-4 flex flex-col flex-1">
                         <h3 className="font-bold text-gray-800 text-sm md:text-base leading-tight mb-1">{product.name}</h3>
-                        <p className="text-xs text-gray-500 mb-3 line-clamp-2">Clique para personalizar e adicionar seu sabor preferido.</p>
+                        <p className="text-xs text-gray-500 mb-3 line-clamp-2">Clique para personalizar seu pedido.</p>
                         <div className="mt-auto flex items-center justify-between">
                             <span className="font-bold text-acai">R$ {product.price.toFixed(2)}</span>
                             <button 
@@ -183,6 +181,7 @@
         const ModalTradicional = ({ product, onClose, onConfirm }) => {
             const [selectedGratis, setSelectedGratis] = useState([]);
             const [selectedPagos, setSelectedPagos] = useState([]);
+            const [itemObservation, setItemObservation] = useState('');
 
             const handleGratis = (item) => {
                 if (selectedGratis.includes(item)) {
@@ -209,51 +208,45 @@
                         <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
                             <div>
                                 <h2 className="text-lg font-bold text-acai">{product.name}</h2>
-                                <p className="text-xs text-gray-500">Escolha seus acompanhamentos</p>
+                                <p className="text-xs text-gray-500">Acompanhamentos (Máx 4 grátis)</p>
                             </div>
                             <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600"><lucide-icon name="x"></lucide-icon></button>
                         </div>
                         
                         <div className="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-                            {/* Grátis */}
                             <div>
-                                <div className="flex justify-between items-center mb-3">
-                                    <h3 className="font-bold text-gray-700">Adicionais Grátis</h3>
-                                    <span className="text-[10px] bg-purple-100 text-acai px-2 py-0.5 rounded-full font-bold">Máximo 4</span>
-                                </div>
+                                <h3 className="font-bold text-gray-700 mb-3">Grátis</h3>
                                 <div className="grid grid-cols-2 gap-2">
                                     {ADICIONAIS_GRATIS.map(item => (
                                         <label key={item} className={`flex items-center p-3 rounded-xl border transition-all cursor-pointer ${selectedGratis.includes(item) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
-                                            <input 
-                                                type="checkbox" 
-                                                className="hidden" 
-                                                checked={selectedGratis.includes(item)}
-                                                onChange={() => handleGratis(item)}
-                                                disabled={!selectedGratis.includes(item) && selectedGratis.length >= 4}
-                                            />
+                                            <input type="checkbox" className="hidden" checked={selectedGratis.includes(item)} onChange={() => handleGratis(item)} disabled={!selectedGratis.includes(item) && selectedGratis.length >= 4} />
                                             <span className={`text-xs font-medium ${selectedGratis.includes(item) ? 'text-acai' : 'text-gray-600'}`}>{item}</span>
                                         </label>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Pagos */}
                             <div>
                                 <h3 className="font-bold text-gray-700 mb-3">Turbine seu Açaí (Extras)</h3>
                                 <div className="grid grid-cols-2 gap-2">
                                     {ADICIONAIS_PAGOS.map(item => (
                                         <label key={item.name} className={`flex flex-col p-3 rounded-xl border transition-all cursor-pointer ${selectedPagos.some(i => i.name === item.name) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
-                                            <input 
-                                                type="checkbox" 
-                                                className="hidden" 
-                                                checked={selectedPagos.some(i => i.name === item.name)}
-                                                onChange={() => handlePagos(item)}
-                                            />
+                                            <input type="checkbox" className="hidden" checked={selectedPagos.some(i => i.name === item.name)} onChange={() => handlePagos(item)} />
                                             <span className={`text-xs font-medium ${selectedPagos.some(i => i.name === item.name) ? 'text-acai' : 'text-gray-600'}`}>{item.name}</span>
                                             <span className="text-[10px] text-green-600 font-bold">+ R$ {item.price.toFixed(2)}</span>
                                         </label>
                                     ))}
                                 </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-bold text-gray-700 mb-2">Alguma observação para este item?</h3>
+                                <textarea 
+                                    className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20" 
+                                    placeholder="Ex: Sem leite condensado, fruta separada..."
+                                    value={itemObservation}
+                                    onChange={(e) => setItemObservation(e.target.value)}
+                                ></textarea>
                             </div>
                         </div>
 
@@ -266,7 +259,8 @@
                                 onClick={() => onConfirm({ 
                                     ...product, 
                                     price: finalPrice, 
-                                    customDetails: `Grátis: ${selectedGratis.join(', ') || 'Nenhum'}, Extras: ${selectedPagos.map(p => p.name).join(', ') || 'Nenhum'}` 
+                                    customDetails: `Grátis: ${selectedGratis.join(', ') || 'Nenhum'}, Extras: ${selectedPagos.map(p => p.name).join(', ') || 'Nenhum'}`,
+                                    observation: itemObservation
                                 })}
                                 className="w-full bg-acai text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-purple-800 transition-colors"
                             >
@@ -280,6 +274,7 @@
 
         const ModalEspecial = ({ product, onClose, onConfirm }) => {
             const [selectedSize, setSelectedSize] = useState(ESPECIAL_SIZES[0]);
+            const [itemObservation, setItemObservation] = useState('');
 
             return (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm">
@@ -292,22 +287,27 @@
                             <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600"><lucide-icon name="x"></lucide-icon></button>
                         </div>
                         
-                        <div className="p-4 overflow-y-auto space-y-4">
-                            {ESPECIAL_SIZES.map(size => (
-                                <label key={size.label} className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${selectedSize.label === size.label ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
-                                    <div className="flex items-center gap-3">
-                                        <input 
-                                            type="radio" 
-                                            name="size"
-                                            className="w-4 h-4 text-acai"
-                                            checked={selectedSize.label === size.label}
-                                            onChange={() => setSelectedSize(size)}
-                                        />
-                                        <span className={`font-bold ${selectedSize.label === size.label ? 'text-acai' : 'text-gray-700'}`}>{size.label}</span>
-                                    </div>
-                                    <span className="font-bold text-gray-900">R$ {size.price.toFixed(2)}</span>
-                                </label>
-                            ))}
+                        <div className="p-4 overflow-y-auto space-y-6">
+                            <div className="space-y-3">
+                                {ESPECIAL_SIZES.map(size => (
+                                    <label key={size.label} className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${selectedSize.label === size.label ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                        <div className="flex items-center gap-3">
+                                            <input type="radio" name="size" className="w-4 h-4 text-acai" checked={selectedSize.label === size.label} onChange={() => setSelectedSize(size)} />
+                                            <span className={`font-bold ${selectedSize.label === size.label ? 'text-acai' : 'text-gray-700'}`}>{size.label}</span>
+                                        </div>
+                                        <span className="font-bold text-gray-900">R$ {size.price.toFixed(2)}</span>
+                                    </label>
+                                ))}
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-700 mb-2">Alguma observação para este item?</h3>
+                                <textarea 
+                                    className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20" 
+                                    placeholder="Ex: Retirar Oreo, caprichar na calda..."
+                                    value={itemObservation}
+                                    onChange={(e) => setItemObservation(e.target.value)}
+                                ></textarea>
+                            </div>
                         </div>
 
                         <div className="p-4 border-t bg-gray-50">
@@ -320,7 +320,8 @@
                                     ...product, 
                                     name: `${product.name} (${selectedSize.label})`,
                                     price: selectedSize.price, 
-                                    customDetails: `Tamanho: ${selectedSize.label}` 
+                                    customDetails: `Tamanho: ${selectedSize.label}`,
+                                    observation: itemObservation
                                 })}
                                 className="w-full bg-acai text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-purple-800 transition-colors"
                             >
@@ -337,6 +338,7 @@
             const [chocolate, setChocolate] = useState('');
             const [fruit, setFruit] = useState('');
             const [extras, setExtras] = useState([]);
+            const [itemObservation, setItemObservation] = useState('');
 
             const handleExtra = (item) => {
                 if (extras.includes(item)) {
@@ -389,19 +391,25 @@
                             )}
 
                             {step === 3 && (
-                                <div className="animate-in fade-in slide-in-from-right duration-300">
-                                    <h3 className="font-bold text-gray-700 mb-4">Deseja adicionar Extras? (Opcional)</h3>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {[
-                                            "Kit Kat Branco", "Kit Kat Leite", "Trento Branco", "Trento Leite", 
-                                            "MM's", "Ouro Branco", "Sonho de Valsa", "Creme Ninho", "Creme Morango", "Nutella"
-                                        ].map(item => (
-                                            <label key={item} className={`flex flex-col p-3 rounded-xl border cursor-pointer ${extras.includes(item) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
-                                                <input type="checkbox" className="hidden" checked={extras.includes(item)} onChange={() => handleExtra(item)} />
-                                                <span className="text-xs font-medium text-gray-700">{item}</span>
-                                                <span className="text-[10px] text-green-600 font-bold">+ R$ 6.00</span>
-                                            </label>
-                                        ))}
+                                <div className="animate-in fade-in slide-in-from-right duration-300 space-y-6">
+                                    <div>
+                                        <h3 className="font-bold text-gray-700 mb-4">Deseja adicionar Extras? (Opcional)</h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {[
+                                                "Kit Kat Branco", "Kit Kat Leite", "Trento Branco", "Trento Leite", 
+                                                "MM's", "Ouro Branco", "Sonho de Valsa", "Creme Ninho", "Creme Morango", "Nutella"
+                                            ].map(item => (
+                                                <label key={item} className={`flex flex-col p-3 rounded-xl border cursor-pointer ${extras.includes(item) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                                    <input type="checkbox" className="hidden" checked={extras.includes(item)} onChange={() => handleExtra(item)} />
+                                                    <span className="text-xs font-medium text-gray-700">{item}</span>
+                                                    <span className="text-[10px] text-green-600 font-bold">+ R$ 6.00</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-700 mb-2">Observação</h3>
+                                        <textarea className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none h-20" placeholder="Algum detalhe?" value={itemObservation} onChange={(e) => setItemObservation(e.target.value)}></textarea>
                                     </div>
                                 </div>
                             )}
@@ -413,16 +421,15 @@
                                 <span className="text-xl font-bold text-acai">R$ {finalPrice.toFixed(2)}</span>
                             </div>
                             <div className="flex gap-2">
-                                {step > 1 && (
-                                    <button onClick={() => setStep(step - 1)} className="flex-1 border-2 border-acai text-acai py-4 rounded-2xl font-bold">Voltar</button>
-                                )}
+                                {step > 1 && <button onClick={() => setStep(step - 1)} className="flex-1 border-2 border-acai text-acai py-4 rounded-2xl font-bold">Voltar</button>}
                                 <button 
                                     onClick={() => {
                                         if (step < 3) setStep(step + 1);
                                         else onConfirm({
                                             ...product,
                                             price: finalPrice,
-                                            customDetails: `Chocolate: ${chocolate}, Fruta: ${fruit}${extras.length > 0 ? ', Extras: ' + extras.join(', ') : ''}`
+                                            customDetails: `Chocolate: ${chocolate}, Fruta: ${fruit}${extras.length > 0 ? ', Extras: ' + extras.join(', ') : ''}`,
+                                            observation: itemObservation
                                         });
                                     }}
                                     disabled={(step === 1 && !chocolate) || (step === 2 && !fruit)}
@@ -437,7 +444,7 @@
             );
         };
 
-        const CartDrawer = ({ cart, isOpen, onClose, onUpdateQty, onCheckout }) => {
+        const CartDrawer = ({ cart, isOpen, onClose, onUpdateQty, onCheckout, checkoutData, setCheckoutData }) => {
             const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
             if (!isOpen) return null;
@@ -448,64 +455,107 @@
                     <div className="relative bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
                         <div className="p-4 bg-acai text-white flex justify-between items-center">
                             <h2 className="text-xl font-bold flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                                Meu Pedido
+                                <lucide-icon name="shopping-cart"></lucide-icon> Meu Pedido
                             </h2>
                             <button onClick={onClose} className="p-2 bg-white/20 rounded-full hover:bg-white/30"><lucide-icon name="x"></lucide-icon></button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
                             {cart.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                                    <div className="w-24 h-24 mb-4 bg-purple-50 rounded-full flex items-center justify-center">
-                                        <lucide-icon name="shopping-bag" size="48" class="text-acai"></lucide-icon>
-                                    </div>
+                                    <lucide-icon name="shopping-bag" size="48" class="text-acai mb-4"></lucide-icon>
                                     <p className="text-lg font-medium">Seu carrinho está vazio</p>
-                                    <p className="text-sm">Que tal adicionar um açaí cremoso?</p>
                                 </div>
                             ) : (
-                                cart.map((item, index) => (
-                                    <div key={index} className="bg-purple-50 rounded-2xl p-4 flex gap-4 animate-in slide-in-from-bottom duration-300">
-                                        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm border border-purple-100">
-                                            <img src={item.img} alt={item.name} className="h-full object-contain" onError={(e) => e.target.src = 'https://picsum.photos/100/100'} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h4 className="font-bold text-gray-800 text-sm">{item.name}</h4>
-                                            {item.customDetails && <p className="text-[10px] text-gray-500 italic mt-1">{item.customDetails}</p>}
-                                            <div className="flex items-center justify-between mt-3">
-                                                <span className="font-bold text-acai">R$ {(item.price * item.quantity).toFixed(2)}</span>
-                                                <div className="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-purple-200">
-                                                    <button onClick={() => onUpdateQty(index, -1)} className="text-acai hover:bg-purple-50 p-1 rounded"><lucide-icon name="minus" size="14"></lucide-icon></button>
-                                                    <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                                                    <button onClick={() => onUpdateQty(index, 1)} className="text-acai hover:bg-purple-50 p-1 rounded"><lucide-icon name="plus" size="14"></lucide-icon></button>
+                                <>
+                                    <div className="space-y-4">
+                                        {cart.map((item, index) => (
+                                            <div key={index} className="bg-purple-50 rounded-2xl p-4 flex gap-4">
+                                                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm border border-purple-100">
+                                                    <img src={item.img} alt={item.name} className="h-full object-contain" onError={(e) => e.target.src = 'https://picsum.photos/100/100'} />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <h4 className="font-bold text-gray-800 text-sm">{item.name}</h4>
+                                                    {item.customDetails && <p className="text-[10px] text-gray-500 italic">{item.customDetails}</p>}
+                                                    {item.observation && <p className="text-[10px] text-red-500 font-bold mt-1 uppercase">Obs: {item.observation}</p>}
+                                                    <div className="flex items-center justify-between mt-2">
+                                                        <span className="font-bold text-acai text-sm">R$ {(item.price * item.quantity).toFixed(2)}</span>
+                                                        <div className="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-purple-200">
+                                                            <button onClick={() => onUpdateQty(index, -1)} className="text-acai p-1"><lucide-icon name="minus" size="14"></lucide-icon></button>
+                                                            <span className="text-xs font-bold">{item.quantity}</span>
+                                                            <button onClick={() => onUpdateQty(index, 1)} className="text-acai p-1"><lucide-icon name="plus" size="14"></lucide-icon></button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                ))
+
+                                    <div className="space-y-4 pt-4 border-t border-purple-100">
+                                        <h3 className="font-bold text-acai flex items-center gap-2">
+                                            <lucide-icon name="user" size="18"></lucide-icon>Dados de Entrega
+                                        </h3>
+                                        <div className="space-y-3">
+                                            <input 
+                                                className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50" 
+                                                placeholder="Seu Nome completo"
+                                                value={checkoutData.name}
+                                                onChange={(e) => setCheckoutData({...checkoutData, name: e.target.value})}
+                                            />
+                                            <input 
+                                                className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50" 
+                                                placeholder="Endereço (Rua, Número, Bairro)"
+                                                value={checkoutData.address}
+                                                onChange={(e) => setCheckoutData({...checkoutData, address: e.target.value})}
+                                            />
+                                            <textarea 
+                                                className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 resize-none h-16" 
+                                                placeholder="Observações gerais (Ponto de referência, campainha...)"
+                                                value={checkoutData.globalNotes}
+                                                onChange={(e) => setCheckoutData({...checkoutData, globalNotes: e.target.value})}
+                                            ></textarea>
+                                        </div>
+
+                                        <h3 className="font-bold text-acai pt-2 flex items-center gap-2">
+                                            <lucide-icon name="credit-card" size="18"></lucide-icon>Forma de Pagamento
+                                        </h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {['Pix', 'Cartão', 'Dinheiro'].map(method => (
+                                                <label key={method} className={`flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${checkoutData.paymentMethod === method ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                                    <input type="radio" name="payment" checked={checkoutData.paymentMethod === method} onChange={() => setCheckoutData({...checkoutData, paymentMethod: method})} className="w-4 h-4 text-acai" />
+                                                    <span className="text-xs font-bold">{method}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+
+                                        {checkoutData.paymentMethod === 'Dinheiro' && (
+                                            <div className="animate-in fade-in slide-in-from-top duration-300">
+                                                <p className="text-[10px] text-gray-500 mb-1 font-bold">Precisa de troco para quanto?</p>
+                                                <input 
+                                                    type="number"
+                                                    className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50" 
+                                                    placeholder="Ex: 50.00"
+                                                    value={checkoutData.change}
+                                                    onChange={(e) => setCheckoutData({...checkoutData, change: e.target.value})}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
                             )}
                         </div>
 
                         {cart.length > 0 && (
-                            <div className="p-6 border-t bg-white shadow-2xl">
-                                <div className="space-y-2 mb-6">
-                                    <div className="flex justify-between text-gray-500 text-sm">
-                                        <span>Itens</span>
-                                        <span>R$ {total.toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-acai font-bold text-xl">
-                                        <span>Total</span>
-                                        <span>R$ {total.toFixed(2)}</span>
-                                    </div>
+                            <div className="p-6 border-t bg-white">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-gray-600 font-medium">Total do Pedido</span>
+                                    <span className="text-2xl font-bold text-acai">R$ {total.toFixed(2)}</span>
                                 </div>
                                 <button 
                                     onClick={onCheckout}
                                     className="w-full bg-green-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
                                 >
-                                    Enviar para WhatsApp
-                                    <lucide-icon name="send" size="20"></lucide-icon>
+                                    Enviar para WhatsApp <lucide-icon name="send" size="20"></lucide-icon>
                                 </button>
                                 <p className="text-[10px] text-center text-gray-400 mt-3 uppercase tracking-widest font-bold">Finalize seu pedido via Chat</p>
                             </div>
@@ -518,22 +568,21 @@
         const App = () => {
             const [cart, setCart] = useState([]);
             const [isCartOpen, setIsCartOpen] = useState(false);
-            const [activeModal, setActiveModal] = useState(null); // { type, product }
-
-            const openProductModal = (product) => {
-                if (product.type === 'SIMPLE') {
-                    addToCart(product);
-                } else {
-                    setActiveModal({ type: product.type, product });
-                }
-            };
+            const [activeModal, setActiveModal] = useState(null);
+            const [checkoutData, setCheckoutData] = useState({
+                name: '',
+                address: '',
+                globalNotes: '',
+                paymentMethod: '',
+                change: ''
+            });
 
             const addToCart = (customizedProduct) => {
                 setCart(prev => {
-                    // Chave única baseada no nome e nos detalhes de customização
                     const existingIndex = prev.findIndex(item => 
                         item.name === customizedProduct.name && 
-                        item.customDetails === (customizedProduct.customDetails || '')
+                        item.customDetails === (customizedProduct.customDetails || '') &&
+                        item.observation === (customizedProduct.observation || '')
                     );
 
                     if (existingIndex > -1) {
@@ -541,7 +590,7 @@
                         newCart[existingIndex].quantity += 1;
                         return newCart;
                     } else {
-                        return [...prev, { ...customizedProduct, quantity: 1, customDetails: customizedProduct.customDetails || '' }];
+                        return [...prev, { ...customizedProduct, quantity: 1 }];
                     }
                 });
                 setActiveModal(null);
@@ -551,27 +600,37 @@
                 setCart(prev => {
                     const newCart = [...prev];
                     newCart[index].quantity += delta;
-                    if (newCart[index].quantity <= 0) {
-                        newCart.splice(index, 1);
-                    }
+                    if (newCart[index].quantity <= 0) newCart.splice(index, 1);
                     return newCart;
                 });
             };
 
             const handleCheckout = () => {
-                let message = `*NOVO PEDIDO - BOOM AÇAITERIA*\n\n`;
-                let total = 0;
+                if (!checkoutData.name || !checkoutData.address || !checkoutData.paymentMethod) {
+                    alert("Por favor, preencha nome, endereço e forma de pagamento.");
+                    return;
+                }
 
+                let message = `*NOVO PEDIDO - BOOM AÇAITERIA*\n\n`;
+                message += `👤 *Cliente:* ${checkoutData.name}\n`;
+                message += `📍 *Endereço:* ${checkoutData.address}\n`;
+                if (checkoutData.globalNotes) message += `📝 *Obs Geral:* ${checkoutData.globalNotes}\n`;
+                message += `💳 *Pagamento:* ${checkoutData.paymentMethod}\n`;
+                if (checkoutData.paymentMethod === 'Dinheiro' && checkoutData.change) message += `💵 *Troco para:* R$ ${checkoutData.change}\n`;
+                message += `\n--------------------------\n\n`;
+
+                let total = 0;
                 cart.forEach((item, idx) => {
                     const subtotal = item.price * item.quantity;
                     total += subtotal;
-                    message += `${idx + 1}. *${item.name}* (x${item.quantity})\n`;
-                    if (item.customDetails) message += `_Obs: ${item.customDetails}_\n`;
-                    message += `*Preço: R$ ${subtotal.toFixed(2)}*\n\n`;
+                    message += `*${item.quantity}x ${item.name}*\n`;
+                    if (item.customDetails) message += `_Escolhas: ${item.customDetails}_\n`;
+                    if (item.observation) message += `_Obs: ${item.observation}_\n`;
+                    message += `*Subtotal: R$ ${subtotal.toFixed(2)}*\n\n`;
                 });
 
-                message += `*VALOR TOTAL: R$ ${total.toFixed(2)}*\n\n`;
-                message += `Pode me enviar as opções de pagamento e o tempo estimado para entrega?`;
+                message += `--------------------------\n`;
+                message += `💰 *VALOR TOTAL: R$ ${total.toFixed(2)}*`;
 
                 const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
                 window.open(url, '_blank');
@@ -581,46 +640,38 @@
 
             return (
                 <div className="min-h-screen flex flex-col">
-                    {/* Header */}
                     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-purple-100 px-4 py-3 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-acai rounded-xl flex items-center justify-center p-1 overflow-hidden shadow-inner">
-                                <img src="logo_boom.png" alt="Logo" className="w-full h-full object-contain" onError={(e) => e.target.src = 'https://picsum.photos/50/50'} />
+                                <img src="logo_boom.png" alt="Logo" className="w-full h-full object-contain" />
                             </div>
                             <div>
                                 <h1 className="text-base font-bold text-gray-800 leading-none">BOOM Açaiteria</h1>
-                                <p className="text-[10px] text-gray-500 font-medium">O mais cremoso 💜</p>
+                                <p className="text-[10px] text-gray-500 font-medium">O mais cremoso da Praia 💜</p>
                             </div>
                         </div>
                         <BadgeStatus />
                     </header>
 
-                    {/* Main Content */}
                     <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6 space-y-8 pb-32">
-                        {/* Hero */}
                         <div className="relative rounded-3xl overflow-hidden h-44 sm:h-64 bg-acai shadow-xl">
-                            <img 
-                                src="banner_boom_nutella.png" 
-                                className="w-full h-full object-cover opacity-80" 
-                                onError={(e) => e.target.src = 'https://picsum.photos/1000/600'}
-                            />
+                            <img src="banner_hero_boom.png" className="w-full h-full object-cover" onError={(e) => e.target.src = 'https://picsum.photos/1000/600'} />
                             <div className="absolute inset-0 flex flex-col justify-center p-6 bg-gradient-to-r from-black/60 to-transparent">
-                                <h2 className="text-white text-3xl font-black mb-2 animate-pulse">BOOM!</h2>
-                                <p className="text-gold font-bold text-lg uppercase tracking-widest italic">O Açaí mais Cremoso do Brasil</p>
+                                <h2 className="text-white text-3xl font-black mb-2">BOOM!</h2>
+                                <p className="text-gold font-bold text-lg uppercase italic tracking-wider">O Açaí mais Cremoso da Praia</p>
                             </div>
                         </div>
 
-                        {/* Menu Categories */}
                         <div className="space-y-12">
                             {categories.map(cat => (
-                                <section key={cat} id={cat.replace(/\s+/g, '-').toLowerCase()}>
+                                <section key={cat}>
                                     <div className="flex items-center gap-4 mb-6">
                                         <h2 className="text-xl font-bold text-acai whitespace-nowrap">{cat}</h2>
                                         <div className="h-[2px] w-full bg-gradient-to-r from-purple-200 to-transparent"></div>
                                     </div>
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                         {PRODUCTS.filter(p => p.category === cat).map(product => (
-                                            <ProductCard key={product.id} product={product} onAdd={openProductModal} />
+                                            <ProductCard key={product.id} product={product} onAdd={(p) => p.type === 'SIMPLE' ? addToCart(p) : setActiveModal({type: p.type, product: p})} />
                                         ))}
                                     </div>
                                 </section>
@@ -628,15 +679,9 @@
                         </div>
                     </main>
 
-                    {/* Floating Cart Button */}
-                    <button 
-                        onClick={() => setIsCartOpen(true)}
-                        className={`fixed bottom-6 right-6 z-50 bg-gold text-acai p-4 rounded-3xl shadow-2xl flex items-center gap-3 border-2 border-white transition-all transform hover:scale-105 active:scale-95 ${cart.length > 0 ? 'scale-110' : 'scale-100'}`}
-                    >
+                    <button onClick={() => setIsCartOpen(true)} className={`fixed bottom-6 right-6 z-50 bg-gold text-acai p-4 rounded-3xl shadow-2xl flex items-center gap-3 border-2 border-white transition-all transform hover:scale-105 active:scale-95 ${cart.length > 0 ? 'scale-110' : 'scale-100'}`}>
                         <div className="relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
+                            <lucide-icon name="shopping-bag" size="28"></lucide-icon>
                             {cart.length > 0 && (
                                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
                                     {cart.reduce((a, b) => a + b.quantity, 0)}
@@ -646,63 +691,47 @@
                         <span className="font-bold text-sm hidden sm:block">Ver Carrinho</span>
                     </button>
 
-                    {/* Modals Logic */}
-                    {activeModal?.type === 'TRADICIONAL' && (
-                        <ModalTradicional 
-                            product={activeModal.product} 
-                            onClose={() => setActiveModal(null)} 
-                            onConfirm={addToCart} 
-                        />
-                    )}
-                    {activeModal?.type === 'ESPECIAL' && (
-                        <ModalEspecial 
-                            product={activeModal.product} 
-                            onClose={() => setActiveModal(null)} 
-                            onConfirm={addToCart} 
-                        />
-                    )}
-                    {activeModal?.type === 'HOTDOG' && (
-                        <ModalHotDog 
-                            product={activeModal.product} 
-                            onClose={() => setActiveModal(null)} 
-                            onConfirm={addToCart} 
-                        />
-                    )}
+                    {activeModal?.type === 'TRADICIONAL' && <ModalTradicional product={activeModal.product} onClose={() => setActiveModal(null)} onConfirm={addToCart} />}
+                    {activeModal?.type === 'ESPECIAL' && <ModalEspecial product={activeModal.product} onClose={() => setActiveModal(null)} onConfirm={addToCart} />}
+                    {activeModal?.type === 'HOTDOG' && <ModalHotDog product={activeModal.product} onClose={() => setActiveModal(null)} onConfirm={addToCart} />}
 
-                    {/* Cart Drawer */}
-                    <CartDrawer 
-                        cart={cart} 
-                        isOpen={isCartOpen} 
-                        onClose={() => setIsCartOpen(false)} 
-                        onUpdateQty={updateQuantity}
-                        onCheckout={handleCheckout}
-                    />
+                    <CartDrawer cart={cart} isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onUpdateQty={updateQuantity} onCheckout={handleCheckout} checkoutData={checkoutData} setCheckoutData={setCheckoutData} />
 
-                    {/* Footer */}
                     <footer className="bg-gray-900 text-white p-8 pb-32 sm:pb-8">
-                        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-8">
-                            <div className="space-y-4">
-                                <h3 className="text-xl font-bold text-gold">BOOM Açaiteria</h3>
-                                <p className="text-sm text-gray-400 max-w-xs">Oferecemos o açaí mais cremoso e acompanhamentos selecionados para sua explosão de sabores.</p>
-                                <div className="flex gap-4">
-                                    <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold hover:text-acai transition-colors">
-                                        <lucide-icon name="instagram"></lucide-icon>
-                                    </button>
-                                    <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold hover:text-acai transition-colors">
-                                        <lucide-icon name="phone"></lucide-icon>
-                                    </button>
+                        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-12">
+                            <div className="space-y-6">
+                                <h3 className="text-2xl font-black text-gold italic">BOOM Açaiteria</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3 text-gray-400 text-sm">
+                                        <lucide-icon name="map-pin" size="20" class="text-gold"></lucide-icon>
+                                        <span>Geral Passagem, 0 - Enseada da Pinheira<br/>Palhoça - SC | CEP: 88139-351</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-gray-400 text-sm font-bold">
+                                        <lucide-icon name="shield-check" size="20" class="text-gold"></lucide-icon>
+                                        <span>CNPJ: 26.223.900/0001-91</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 pt-4">
+                                    <a href="https://wa.me/5548996704089" target="_blank" className="w-14 h-14 bg-green-500 rounded-full flex flex-col items-center justify-center hover:scale-110 transition-transform">
+                                        <lucide-icon name="phone" size="24"></lucide-icon>
+                                        <span className="text-[8px] font-black uppercase mt-1">Parceria</span>
+                                    </a>
+                                    <a href="https://instagram.com/boomacaiteria" target="_blank" className="w-14 h-14 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-full flex flex-col items-center justify-center hover:scale-110 transition-transform">
+                                        <lucide-icon name="instagram" size="24"></lucide-icon>
+                                        <span className="text-[8px] font-black uppercase mt-1">Siga-nos</span>
+                                    </a>
                                 </div>
                             </div>
                             <div className="space-y-4">
-                                <h3 className="text-lg font-bold">Horários</h3>
-                                <ul className="text-sm text-gray-400 space-y-2">
-                                    <li className="flex justify-between gap-8"><span>Seg - Sab</span> <span>14:00 - 23:59</span></li>
-                                    <li className="flex justify-between gap-8"><span>Domingo</span> <span>16:00 - 23:59</span></li>
+                                <h3 className="text-lg font-bold border-l-4 border-gold pl-3">Horários de Entrega</h3>
+                                <ul className="text-sm text-gray-400 space-y-3">
+                                    <li className="flex justify-between gap-8 border-b border-white/5 pb-2"><span>Segunda a Sábado</span> <span className="font-bold text-white">14:00 - 23:59</span></li>
+                                    <li className="flex justify-between gap-8 border-b border-white/5 pb-2"><span>Domingo</span> <span className="font-bold text-white">16:00 - 23:59</span></li>
                                 </ul>
                             </div>
                         </div>
-                        <div className="max-w-5xl mx-auto pt-8 mt-8 border-t border-white/10 text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">
-                            © 2024 BOOM Açaiteria - Todos os direitos reservados.
+                        <div className="max-w-5xl mx-auto pt-8 mt-12 border-t border-white/10 text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                            © 2024 BOOM Açaiteria - O mais cremoso da Praia
                         </div>
                     </footer>
                 </div>
@@ -711,9 +740,7 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-        
-        // Inicializa ícones Lucide após o render
-        setTimeout(() => lucide.createIcons(), 100);
+        setTimeout(() => lucide.createIcons(), 150);
     </script>
 </body>
 </html>
