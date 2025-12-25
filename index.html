@@ -1,19 +1,23 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOM Açaiteria - O Açaí mais Cremoso do Brasil</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <title>BOOM Açaiteria - O Açaí mais Cremoso Do Brasil 💜</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #F3E5F5;
-            -webkit-tap-highlight-color: transparent;
         }
+        .bg-acai { background-color: #6A0DAD; }
+        .text-acai { color: #6A0DAD; }
+        .bg-gold { background-color: #FFC107; }
+        .text-gold { color: #FFC107; }
+        .border-acai { border-color: #6A0DAD; }
+        
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
@@ -24,505 +28,692 @@
             background: #6A0DAD;
             border-radius: 10px;
         }
-        .sticky-nav {
-            transition: all 0.3s ease;
+        
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
         }
-        .product-card {
-            transition: transform 0.2s ease;
-        }
-        .product-card:active {
-            transform: scale(0.98);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <script>
-        const { useState, useEffect, useMemo, useCallback } = React;
+    <!-- Scripts do React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-        // ========== CONSTANTES ==========
-        const COLORS = {
-            primary: '#6A0DAD',
-            secondary: '#FFC107',
-            background: '#F3E5F5',
-        };
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
 
-        const FREE_ADDONS = [
-            'Banana', 'Abacaxi', 'Paçoca', 'Granola', 'Leite Ninho', 
-            'Leite Condensado', 'Ovo Maltine', 'Sucrilhos', 
-            'Bis Branco', 'Bis ao Leite', 'Chocoball'
+        // --- CONSTANTES E DADOS ---
+        const WHATSAPP_NUMBER = "5548996704089";
+        const BUSINESS_NAME = "BOOM Açaiteria";
+        const PRIMARY_COLOR = "#6A0DAD";
+        const ACCENT_COLOR = "#FFC107";
+
+        const ADICIONAIS_GRATIS = [
+            "Banana", "Abacaxi", "Paçoca", "Granola", "Leite Ninho", 
+            "Leite Condensado", "Ovo Maltine", "Sucrilhos", "Bis Branco", 
+            "Bis ao Leite", "Chocoball"
         ];
 
-        const PAID_ADDONS = [
-            { name: 'Morango', price: 3.00 },
-            { name: 'Ouro Branco', price: 3.00 },
-            { name: 'Sonho de Valsa', price: 3.00 },
-            { name: 'Stikadinho', price: 3.00 },
-            { name: 'Confetes', price: 2.00 },
-            { name: 'Trento Branco', price: 3.00 },
-            { name: 'Trento ao Leite', price: 3.00 },
-            { name: 'Kit Kat Branco', price: 4.00 },
-            { name: 'Kit Kat ao Leite', price: 4.00 },
-            { name: 'Creme de Ninho', price: 4.00 },
-            { name: 'Creme de Morango', price: 4.00 },
-            { name: 'Nutella Original', price: 4.00 }
+        const ADICIONAIS_PAGOS = [
+            { name: "Morango", price: 3.00 },
+            { name: "Ouro Branco", price: 3.00 },
+            { name: "Sonho de Valsa", price: 3.00 },
+            { name: "Stikadinho", price: 3.00 },
+            { name: "Confetes", price: 2.00 },
+            { name: "Trento Branco", price: 3.00 },
+            { name: "Trento ao Leite", price: 3.00 },
+            { name: "Kit Kat Branco", price: 4.00 },
+            { name: "Kit Kat ao Leite", price: 4.00 },
+            { name: "Creme de Ninho", price: 4.00 },
+            { name: "Creme de Morango", price: 4.00 },
+            { name: "Nutella", price: 4.00 }
         ];
 
-        const SPECIAL_SIZES = [
-            { size: '300ml', price: 34.00 },
-            { size: '400ml', price: 41.00 },
-            { size: '500ml', price: 48.00 },
-            { size: '700ml', price: 61.00 }
+        const ESPECIAL_SIZES = [
+            { label: "300ml", price: 34.00 },
+            { label: "400ml", price: 41.00 },
+            { label: "500ml", price: 48.00 },
+            { label: "700ml", price: 61.00 }
         ];
 
         const PRODUCTS = [
-            // Copos Tradicionais
-            { id: 't1', name: 'Copo 300ml', price: 25.00, description: 'Açaí puro + 4 Acompanhamentos Grátis', category: 'Copos Tradicionais', type: 'tradicional' },
-            { id: 't2', name: 'Copo 400ml', price: 30.00, description: 'Açaí puro + 4 Acompanhamentos Grátis', category: 'Copos Tradicionais', type: 'tradicional' },
-            { id: 't3', name: 'Copo 500ml', price: 35.00, description: 'Açaí puro + 4 Acompanhamentos Grátis', category: 'Copos Tradicionais', type: 'tradicional' },
-            { id: 't4', name: 'Copo 700ml', price: 45.00, description: 'Açaí puro + 4 Acompanhamentos Grátis', category: 'Copos Tradicionais', type: 'tradicional' },
+            // TRADICIONAL
+            { id: 1, name: "Copo 300ml", price: 25.00, img: "300ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
+            { id: 2, name: "Copo 400ml", price: 30.00, img: "400ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
+            { id: 3, name: "Copo 500ml", price: 35.00, img: "500ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
+            { id: 4, name: "Copo 700ml", price: 45.00, img: "700ml.png", type: "TRADICIONAL", category: "Açaí Tradicional" },
             
-            // Copos Especiais
-            { id: 'e1', name: 'Divino Trento', price: 34.00, description: 'Nutella, Ninho, Trento Leite, Trento Branco e Açaí.', category: 'Copos Especiais', type: 'especial' },
-            { id: 'e2', name: 'Explosão de Oreo', price: 34.00, description: 'Nutella, Ninho, Bolacha Oreo, Bis Oreo e Açaí.', category: 'Copos Especiais', type: 'especial' },
-            { id: 'e3', name: 'Nobre KitKat', price: 34.00, description: 'Nutella, Kit Kat e Açaí.', category: 'Copos Especiais', type: 'especial' },
-            { id: 'e4', name: 'Magnífico Sonho de Valsa', price: 34.00, description: 'Nutella Original, Sonho de Valsa e Açaí.', category: 'Copos Especiais', type: 'especial' },
-            { id: 'e5', name: 'Luxuoso Casadinho', price: 34.00, description: 'Nutella, Ninho, Sonho de Valsa, Ouro Branco e Açaí.', category: 'Copos Especiais', type: 'especial' },
-            { id: 'e6', name: 'Bombástico Moranguinho', price: 34.00, description: 'Creme de Morango, Ninho, Trento Morango, Morango e Açaí.', category: 'Copos Especiais', type: 'especial' },
+            // ESPECIAL
+            { id: 5, name: "Divino Trento", price: 34.00, img: "divino.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 6, name: "Explosão de Oreo", price: 34.00, img: "explosao.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 7, name: "Nobre KitKat", price: 34.00, img: "nobre.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 8, name: "Magnífico Sonho de Valsa", price: 34.00, img: "magnifico.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 9, name: "Luxuoso Casadinho", price: 34.00, img: "luxuoso.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 10, name: "Bombástico Moranguinho", price: 34.00, img: "bombastico.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 11, name: "Maravilhoso KitKat Branco", price: 34.00, img: "maravilhoso.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 12, name: "Esplêndido Stikadinho", price: 34.00, img: "esplendido.png", type: "ESPECIAL", category: "Gourmet Especial" },
+            { id: 13, name: "Majestoso Ouro Branco", price: 34.00, img: "majestoso.png", type: "ESPECIAL", category: "Gourmet Especial" },
 
-            // Lanches & Bebidas
-            { id: 's1', name: 'Hot Dog Doce', price: 15.00, description: 'Pão macio, chocolate e frutas.', category: 'Lanches & Bebidas', type: 'simples' },
-            { id: 's2', name: 'Coca Cola Lata 350ml', price: 7.00, category: 'Lanches & Bebidas', type: 'simples' },
-            { id: 's3', name: 'Água com Gás 500ml', price: 4.00, category: 'Lanches & Bebidas', type: 'simples' },
+            // HOTDOG
+            { id: 14, name: "Hot Dog Doce", price: 15.00, img: "hotdog.png", type: "HOTDOG", category: "Lanches" },
+
+            // SIMPLE (BEBIDAS)
+            { id: 15, name: "Água s/ Gás 500ml", price: 4.00, img: "agua-sem-gas.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 16, name: "Água c/ Gás 500ml", price: 4.00, img: "agua-com-gas.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 17, name: "Coca Cola 200ml", price: 4.00, img: "coca200ml.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 18, name: "Coca Cola Lata 350ml", price: 7.00, img: "cocalata.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 19, name: "Coca Cola Zero Lata 350ml", price: 7.00, img: "cocazero.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 20, name: "Fanta Laranja Lata 350ml", price: 7.00, img: "fanta.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 21, name: "Guaraná Antarctica Lata", price: 7.00, img: "guarana.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 22, name: "Coca Cola 1.5L", price: 15.00, img: "coca15l.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 23, name: "Coca Cola Zero 1.5L", price: 15.00, img: "cocazero15l.png", type: "SIMPLE", category: "Bebidas" },
+            { id: 24, name: "Pureza 1.5L", price: 12.00, img: "pureza.png", type: "SIMPLE", category: "Bebidas" }
         ];
 
-        const WHATSAPP_NUMBER = '5548996704089';
+        // --- COMPONENTES ---
 
-        // ========== COMPONENTE PRINCIPAL ==========
-        function App() {
-            const [cart, setCart] = useState([]);
-            const [selectedProduct, setSelectedProduct] = useState(null);
-            const [isCartOpen, setIsCartOpen] = useState(false);
-            const [scrolled, setScrolled] = useState(false);
+        const BadgeStatus = () => {
             const [isOpen, setIsOpen] = useState(false);
 
-            // Modal State for Selection
-            const [tempFreeAddons, setTempFreeAddons] = useState([]);
-            const [tempPaidAddons, setTempPaidAddons] = useState([]);
-            const [tempSize, setTempSize] = useState(null);
-            const [observations, setObservations] = useState('');
-
-            // Business Logic: Horário
-            const checkStatus = useCallback(() => {
-                const now = new Date();
-                const day = now.getDay();
-                const hour = now.getHours();
-                const min = now.getMinutes();
-                const currentTime = hour + min / 60;
-
-                if (day === 0) {
-                    setIsOpen(currentTime >= 16 && currentTime < 23.99);
-                } else {
-                    setIsOpen(currentTime >= 14 && currentTime < 23.99);
-                }
-            }, []);
-
             useEffect(() => {
+                const checkStatus = () => {
+                    const now = new Date();
+                    const day = now.getDay(); // 0 = Domingo, 1 = Segunda...
+                    const hour = now.getHours();
+                    const minutes = now.getMinutes();
+                    const currentTime = hour + minutes / 60;
+
+                    if (day === 0) { // Domingo
+                        setIsOpen(currentTime >= 16 && currentTime < 23.99);
+                    } else { // Segunda a Sábado
+                        setIsOpen(currentTime >= 14 && currentTime < 23.99);
+                    }
+                };
                 checkStatus();
                 const interval = setInterval(checkStatus, 60000);
-                
-                const handleScroll = () => {
-                    setScrolled(window.scrollY > 50);
-                };
-                window.addEventListener('scroll', handleScroll);
-                
-                return () => {
-                    clearInterval(interval);
-                    window.removeEventListener('scroll', handleScroll);
-                };
-            }, [checkStatus]);
+                return () => clearInterval(interval);
+            }, []);
 
-            const handleProductClick = (product) => {
-                setSelectedProduct(product);
-                setTempFreeAddons([]);
-                setTempPaidAddons([]);
-                setObservations('');
-                
-                if (product.type === 'especial') {
-                    setTempSize({ size: '300ml', price: 34.00 });
-                } else if (product.type === 'simples') {
-                    addToCartDirect(product);
-                    setSelectedProduct(null);
+            return (
+                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isOpen ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                    <span className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                    {isOpen ? 'Aberto Agora' : 'Fechado Agora'}
+                </div>
+            );
+        };
+
+        const ProductCard = ({ product, onAdd }) => {
+            return (
+                <div className="bg-white rounded-2xl shadow-sm border border-purple-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                    <div className="relative h-40 bg-purple-50 flex items-center justify-center p-4">
+                        <img 
+                            src={product.img} 
+                            alt={product.name} 
+                            className="h-full object-contain hover:scale-110 transition-transform duration-300"
+                            onError={(e) => e.target.src = 'https://picsum.photos/200/200?random=' + product.id}
+                        />
+                    </div>
+                    <div className="p-4 flex flex-col flex-1">
+                        <h3 className="font-bold text-gray-800 text-sm md:text-base leading-tight mb-1">{product.name}</h3>
+                        <p className="text-xs text-gray-500 mb-3 line-clamp-2">Clique para personalizar e adicionar seu sabor preferido.</p>
+                        <div className="mt-auto flex items-center justify-between">
+                            <span className="font-bold text-acai">R$ {product.price.toFixed(2)}</span>
+                            <button 
+                                onClick={() => onAdd(product)}
+                                className="bg-acai text-white p-2 rounded-xl hover:bg-purple-800 transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ModalTradicional = ({ product, onClose, onConfirm }) => {
+            const [selectedGratis, setSelectedGratis] = useState([]);
+            const [selectedPagos, setSelectedPagos] = useState([]);
+
+            const handleGratis = (item) => {
+                if (selectedGratis.includes(item)) {
+                    setSelectedGratis(selectedGratis.filter(i => i !== item));
+                } else if (selectedGratis.length < 4) {
+                    setSelectedGratis([...selectedGratis, item]);
                 }
             };
 
-            const addToCartDirect = (product) => {
-                const newItem = {
-                    cartId: Date.now().toString(),
-                    id: product.id,
-                    name: product.name,
-                    basePrice: product.price,
-                    totalPrice: product.price,
-                    type: product.type,
-                    freeAddons: [],
-                    paidAddons: [],
-                    quantity: 1
-                };
-                setCart(prev => [...prev, newItem]);
-            };
-
-            const handleAddToCartModal = () => {
-                if (!selectedProduct) return;
-
-                let basePrice = selectedProduct.price;
-                let name = selectedProduct.name;
-                let selectedSizeLabel = undefined;
-
-                if (selectedProduct.type === 'especial' && tempSize) {
-                    basePrice = tempSize.price;
-                    selectedSizeLabel = tempSize.size;
+            const handlePagos = (item) => {
+                if (selectedPagos.some(i => i.name === item.name)) {
+                    setSelectedPagos(selectedPagos.filter(i => i.name !== item.name));
+                } else {
+                    setSelectedPagos([...selectedPagos, item]);
                 }
-
-                const paidAddonsTotal = tempPaidAddons.reduce((acc, curr) => acc + curr.price, 0);
-                const totalPrice = basePrice + paidAddonsTotal;
-
-                const newItem = {
-                    cartId: Date.now().toString(),
-                    id: selectedProduct.id,
-                    name: name,
-                    basePrice: basePrice,
-                    totalPrice: totalPrice,
-                    type: selectedProduct.type,
-                    selectedSize: selectedSizeLabel,
-                    freeAddons: tempFreeAddons,
-                    paidAddons: tempPaidAddons,
-                    observations: observations,
-                    quantity: 1
-                };
-
-                setCart(prev => [...prev, newItem]);
-                setSelectedProduct(null);
             };
 
-            const removeFromCart = (cartId) => {
-                setCart(prev => prev.filter(item => item.cartId !== cartId));
+            const totalExtras = selectedPagos.reduce((acc, curr) => acc + curr.price, 0);
+            const finalPrice = product.price + totalExtras;
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+                        <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <div>
+                                <h2 className="text-lg font-bold text-acai">{product.name}</h2>
+                                <p className="text-xs text-gray-500">Escolha seus acompanhamentos</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600"><lucide-icon name="x"></lucide-icon></button>
+                        </div>
+                        
+                        <div className="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                            {/* Grátis */}
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="font-bold text-gray-700">Adicionais Grátis</h3>
+                                    <span className="text-[10px] bg-purple-100 text-acai px-2 py-0.5 rounded-full font-bold">Máximo 4</span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {ADICIONAIS_GRATIS.map(item => (
+                                        <label key={item} className={`flex items-center p-3 rounded-xl border transition-all cursor-pointer ${selectedGratis.includes(item) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                            <input 
+                                                type="checkbox" 
+                                                className="hidden" 
+                                                checked={selectedGratis.includes(item)}
+                                                onChange={() => handleGratis(item)}
+                                                disabled={!selectedGratis.includes(item) && selectedGratis.length >= 4}
+                                            />
+                                            <span className={`text-xs font-medium ${selectedGratis.includes(item) ? 'text-acai' : 'text-gray-600'}`}>{item}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Pagos */}
+                            <div>
+                                <h3 className="font-bold text-gray-700 mb-3">Turbine seu Açaí (Extras)</h3>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {ADICIONAIS_PAGOS.map(item => (
+                                        <label key={item.name} className={`flex flex-col p-3 rounded-xl border transition-all cursor-pointer ${selectedPagos.some(i => i.name === item.name) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                            <input 
+                                                type="checkbox" 
+                                                className="hidden" 
+                                                checked={selectedPagos.some(i => i.name === item.name)}
+                                                onChange={() => handlePagos(item)}
+                                            />
+                                            <span className={`text-xs font-medium ${selectedPagos.some(i => i.name === item.name) ? 'text-acai' : 'text-gray-600'}`}>{item.name}</span>
+                                            <span className="text-[10px] text-green-600 font-bold">+ R$ {item.price.toFixed(2)}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-4 border-t bg-gray-50">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-gray-600 font-medium">Total do Item</span>
+                                <span className="text-xl font-bold text-acai">R$ {finalPrice.toFixed(2)}</span>
+                            </div>
+                            <button 
+                                onClick={() => onConfirm({ 
+                                    ...product, 
+                                    price: finalPrice, 
+                                    customDetails: `Grátis: ${selectedGratis.join(', ') || 'Nenhum'}, Extras: ${selectedPagos.map(p => p.name).join(', ') || 'Nenhum'}` 
+                                })}
+                                className="w-full bg-acai text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-purple-800 transition-colors"
+                            >
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ModalEspecial = ({ product, onClose, onConfirm }) => {
+            const [selectedSize, setSelectedSize] = useState(ESPECIAL_SIZES[0]);
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+                        <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <div>
+                                <h2 className="text-lg font-bold text-acai">{product.name}</h2>
+                                <p className="text-xs text-gray-500">Escolha o tamanho</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600"><lucide-icon name="x"></lucide-icon></button>
+                        </div>
+                        
+                        <div className="p-4 overflow-y-auto space-y-4">
+                            {ESPECIAL_SIZES.map(size => (
+                                <label key={size.label} className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${selectedSize.label === size.label ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <input 
+                                            type="radio" 
+                                            name="size"
+                                            className="w-4 h-4 text-acai"
+                                            checked={selectedSize.label === size.label}
+                                            onChange={() => setSelectedSize(size)}
+                                        />
+                                        <span className={`font-bold ${selectedSize.label === size.label ? 'text-acai' : 'text-gray-700'}`}>{size.label}</span>
+                                    </div>
+                                    <span className="font-bold text-gray-900">R$ {size.price.toFixed(2)}</span>
+                                </label>
+                            ))}
+                        </div>
+
+                        <div className="p-4 border-t bg-gray-50">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-gray-600 font-medium">Preço Final</span>
+                                <span className="text-xl font-bold text-acai">R$ {selectedSize.price.toFixed(2)}</span>
+                            </div>
+                            <button 
+                                onClick={() => onConfirm({ 
+                                    ...product, 
+                                    name: `${product.name} (${selectedSize.label})`,
+                                    price: selectedSize.price, 
+                                    customDetails: `Tamanho: ${selectedSize.label}` 
+                                })}
+                                className="w-full bg-acai text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-purple-800 transition-colors"
+                            >
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ModalHotDog = ({ product, onClose, onConfirm }) => {
+            const [step, setStep] = useState(1);
+            const [chocolate, setChocolate] = useState('');
+            const [fruit, setFruit] = useState('');
+            const [extras, setExtras] = useState([]);
+
+            const handleExtra = (item) => {
+                if (extras.includes(item)) {
+                    setExtras(extras.filter(i => i !== item));
+                } else {
+                    setExtras([...extras, item]);
+                }
             };
 
-            const cartTotal = useMemo(() => {
-                return cart.reduce((acc, curr) => acc + curr.totalPrice * curr.quantity, 0);
-            }, [cart]);
+            const finalPrice = product.price + (extras.length * 6.00);
 
-            const sendWhatsApp = (userData) => {
-                const header = `*PEDIDO BOOM AÇAITERIA*\n--------------------------\n`;
-                const statusText = `*Status:* Pedido realizado via Website\n`;
-                const userText = `*Cliente:* ${userData.name}\n*Endereço:* ${userData.address}\n*Pagamento:* ${userData.payment}${userData.troco ? ` (Troco p/ ${userData.troco})` : ''}\n\n`;
-                
-                let itemsText = `*ÍTENS:*\n`;
-                cart.forEach(item => {
-                    itemsText += `- ${item.quantity}x ${item.name} ${item.selectedSize ? `(${item.selectedSize})` : ''}\n`;
-                    if (item.freeAddons.length > 0) itemsText += `  _Grátis: ${item.freeAddons.join(', ')}_\n`;
-                    if (item.paidAddons.length > 0) itemsText += `  _Extras: ${item.paidAddons.map(a => a.name).join(', ')}_\n`;
-                    if (item.observations) itemsText += `  _Obs: ${item.observations}_\n`;
-                    itemsText += `  *Subtotal: R$ ${(item.totalPrice * item.quantity).toFixed(2)}*\n\n`;
+            return (
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+                        <div className="p-4 border-b flex justify-between items-center bg-white z-10">
+                            <div>
+                                <h2 className="text-lg font-bold text-acai">Hot Dog Doce</h2>
+                                <p className="text-xs text-gray-500">Etapa {step} de 3</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600"><lucide-icon name="x"></lucide-icon></button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                            {step === 1 && (
+                                <div className="animate-in fade-in slide-in-from-right duration-300">
+                                    <h3 className="font-bold text-gray-700 mb-4">Escolha o Chocolate (Obrigatório)</h3>
+                                    <div className="space-y-3">
+                                        {["Branco", "Ao Leite", "Misto"].map(item => (
+                                            <label key={item} className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer ${chocolate === item ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                                <input type="radio" name="choc" checked={chocolate === item} onChange={() => setChocolate(item)} className="w-4 h-4 text-acai" />
+                                                <span className="font-medium text-gray-700">{item}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 2 && (
+                                <div className="animate-in fade-in slide-in-from-right duration-300">
+                                    <h3 className="font-bold text-gray-700 mb-4">Escolha uma Fruta (Obrigatório)</h3>
+                                    <div className="space-y-3">
+                                        {["Banana", "Abacaxi", "Morango"].map(item => (
+                                            <label key={item} className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer ${fruit === item ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                                <input type="radio" name="fruit" checked={fruit === item} onChange={() => setFruit(item)} className="w-4 h-4 text-acai" />
+                                                <span className="font-medium text-gray-700">{item}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 3 && (
+                                <div className="animate-in fade-in slide-in-from-right duration-300">
+                                    <h3 className="font-bold text-gray-700 mb-4">Deseja adicionar Extras? (Opcional)</h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {[
+                                            "Kit Kat Branco", "Kit Kat Leite", "Trento Branco", "Trento Leite", 
+                                            "MM's", "Ouro Branco", "Sonho de Valsa", "Creme Ninho", "Creme Morango", "Nutella"
+                                        ].map(item => (
+                                            <label key={item} className={`flex flex-col p-3 rounded-xl border cursor-pointer ${extras.includes(item) ? 'border-acai bg-purple-50' : 'border-gray-100'}`}>
+                                                <input type="checkbox" className="hidden" checked={extras.includes(item)} onChange={() => handleExtra(item)} />
+                                                <span className="text-xs font-medium text-gray-700">{item}</span>
+                                                <span className="text-[10px] text-green-600 font-bold">+ R$ 6.00</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-4 border-t bg-gray-50">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-gray-600 font-medium">Subtotal</span>
+                                <span className="text-xl font-bold text-acai">R$ {finalPrice.toFixed(2)}</span>
+                            </div>
+                            <div className="flex gap-2">
+                                {step > 1 && (
+                                    <button onClick={() => setStep(step - 1)} className="flex-1 border-2 border-acai text-acai py-4 rounded-2xl font-bold">Voltar</button>
+                                )}
+                                <button 
+                                    onClick={() => {
+                                        if (step < 3) setStep(step + 1);
+                                        else onConfirm({
+                                            ...product,
+                                            price: finalPrice,
+                                            customDetails: `Chocolate: ${chocolate}, Fruta: ${fruit}${extras.length > 0 ? ', Extras: ' + extras.join(', ') : ''}`
+                                        });
+                                    }}
+                                    disabled={(step === 1 && !chocolate) || (step === 2 && !fruit)}
+                                    className="flex-[2] bg-acai text-white py-4 rounded-2xl font-bold text-lg disabled:opacity-50"
+                                >
+                                    {step === 3 ? 'Finalizar' : 'Continuar'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const CartDrawer = ({ cart, isOpen, onClose, onUpdateQty, onCheckout }) => {
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 z-[60] flex justify-end">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose}></div>
+                    <div className="relative bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+                        <div className="p-4 bg-acai text-white flex justify-between items-center">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Meu Pedido
+                            </h2>
+                            <button onClick={onClose} className="p-2 bg-white/20 rounded-full hover:bg-white/30"><lucide-icon name="x"></lucide-icon></button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                            {cart.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
+                                    <div className="w-24 h-24 mb-4 bg-purple-50 rounded-full flex items-center justify-center">
+                                        <lucide-icon name="shopping-bag" size="48" class="text-acai"></lucide-icon>
+                                    </div>
+                                    <p className="text-lg font-medium">Seu carrinho está vazio</p>
+                                    <p className="text-sm">Que tal adicionar um açaí cremoso?</p>
+                                </div>
+                            ) : (
+                                cart.map((item, index) => (
+                                    <div key={index} className="bg-purple-50 rounded-2xl p-4 flex gap-4 animate-in slide-in-from-bottom duration-300">
+                                        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm border border-purple-100">
+                                            <img src={item.img} alt={item.name} className="h-full object-contain" onError={(e) => e.target.src = 'https://picsum.photos/100/100'} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-gray-800 text-sm">{item.name}</h4>
+                                            {item.customDetails && <p className="text-[10px] text-gray-500 italic mt-1">{item.customDetails}</p>}
+                                            <div className="flex items-center justify-between mt-3">
+                                                <span className="font-bold text-acai">R$ {(item.price * item.quantity).toFixed(2)}</span>
+                                                <div className="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-purple-200">
+                                                    <button onClick={() => onUpdateQty(index, -1)} className="text-acai hover:bg-purple-50 p-1 rounded"><lucide-icon name="minus" size="14"></lucide-icon></button>
+                                                    <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                                                    <button onClick={() => onUpdateQty(index, 1)} className="text-acai hover:bg-purple-50 p-1 rounded"><lucide-icon name="plus" size="14"></lucide-icon></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {cart.length > 0 && (
+                            <div className="p-6 border-t bg-white shadow-2xl">
+                                <div className="space-y-2 mb-6">
+                                    <div className="flex justify-between text-gray-500 text-sm">
+                                        <span>Itens</span>
+                                        <span>R$ {total.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-acai font-bold text-xl">
+                                        <span>Total</span>
+                                        <span>R$ {total.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={onCheckout}
+                                    className="w-full bg-green-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                                >
+                                    Enviar para WhatsApp
+                                    <lucide-icon name="send" size="20"></lucide-icon>
+                                </button>
+                                <p className="text-[10px] text-center text-gray-400 mt-3 uppercase tracking-widest font-bold">Finalize seu pedido via Chat</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [activeModal, setActiveModal] = useState(null); // { type, product }
+
+            const openProductModal = (product) => {
+                if (product.type === 'SIMPLE') {
+                    addToCart(product);
+                } else {
+                    setActiveModal({ type: product.type, product });
+                }
+            };
+
+            const addToCart = (customizedProduct) => {
+                setCart(prev => {
+                    // Chave única baseada no nome e nos detalhes de customização
+                    const existingIndex = prev.findIndex(item => 
+                        item.name === customizedProduct.name && 
+                        item.customDetails === (customizedProduct.customDetails || '')
+                    );
+
+                    if (existingIndex > -1) {
+                        const newCart = [...prev];
+                        newCart[existingIndex].quantity += 1;
+                        return newCart;
+                    } else {
+                        return [...prev, { ...customizedProduct, quantity: 1, customDetails: customizedProduct.customDetails || '' }];
+                    }
+                });
+                setActiveModal(null);
+            };
+
+            const updateQuantity = (index, delta) => {
+                setCart(prev => {
+                    const newCart = [...prev];
+                    newCart[index].quantity += delta;
+                    if (newCart[index].quantity <= 0) {
+                        newCart.splice(index, 1);
+                    }
+                    return newCart;
+                });
+            };
+
+            const handleCheckout = () => {
+                let message = `*NOVO PEDIDO - BOOM AÇAITERIA*\n\n`;
+                let total = 0;
+
+                cart.forEach((item, idx) => {
+                    const subtotal = item.price * item.quantity;
+                    total += subtotal;
+                    message += `${idx + 1}. *${item.name}* (x${item.quantity})\n`;
+                    if (item.customDetails) message += `_Obs: ${item.customDetails}_\n`;
+                    message += `*Preço: R$ ${subtotal.toFixed(2)}*\n\n`;
                 });
 
-                const footer = `--------------------------\n*TOTAL: R$ ${cartTotal.toFixed(2)}*`;
-                
-                const fullText = encodeURIComponent(header + statusText + userText + itemsText + footer);
-                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${fullText}`, '_blank');
+                message += `*VALOR TOTAL: R$ ${total.toFixed(2)}*\n\n`;
+                message += `Pode me enviar as opções de pagamento e o tempo estimado para entrega?`;
+
+                const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
             };
 
-            return React.createElement('div', { className: 'min-h-screen pb-24 text-gray-900 bg-[#F3E5F5]' },
-                // Sticky Header
-                React.createElement('nav', { className: `fixed top-0 left-0 w-full z-40 px-4 py-2 flex items-center justify-between transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-1' : 'bg-transparent'}` },
-                    React.createElement('div', { className: `flex items-center gap-2 transition-opacity ${scrolled ? 'opacity-100' : 'opacity-0'}` },
-                        React.createElement('div', { className: 'w-8 h-8 rounded-full border border-gray-100 bg-[#6A0DAD]' }),
-                        React.createElement('span', { className: 'font-bold text-[#6A0DAD] text-sm' }, 'BOOM Açaiteria')
-                    ),
-                    React.createElement('div', { className: `px-2.5 py-1 rounded-full text-[10px] font-black tracking-tighter ${isOpen ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}` },
-                        isOpen ? 'ABERTO' : 'FECHADO'
-                    )
-                ),
+            const categories = [...new Set(PRODUCTS.map(p => p.category))];
 
-                // Hero Section
-                React.createElement('section', { className: 'relative w-full mt-16' },
-                    React.createElement('div', { className: 'w-full h-48 bg-gradient-to-r from-[#6A0DAD] to-[#FFC107] flex items-center justify-center' },
-                        React.createElement('h1', { className: 'text-3xl font-black text-white text-center' }, 'BOOM Açaiteria')
-                    ),
-                    React.createElement('div', { className: 'absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white px-5 py-1.5 rounded-full shadow-lg border-2 border-[#6A0DAD] z-10' },
-                        React.createElement('h2', { className: 'text-[10px] sm:text-xs font-black text-[#6A0DAD] whitespace-nowrap uppercase tracking-widest' }, 'O Açaí mais Cremoso do Brasil')
-                    )
-                ),
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Header */}
+                    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-purple-100 px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-acai rounded-xl flex items-center justify-center p-1 overflow-hidden shadow-inner">
+                                <img src="logo_boom.png" alt="Logo" className="w-full h-full object-contain" onError={(e) => e.target.src = 'https://picsum.photos/50/50'} />
+                            </div>
+                            <div>
+                                <h1 className="text-base font-bold text-gray-800 leading-none">BOOM Açaiteria</h1>
+                                <p className="text-[10px] text-gray-500 font-medium">O mais cremoso 💜</p>
+                            </div>
+                        </div>
+                        <BadgeStatus />
+                    </header>
 
-                // Menu Content
-                React.createElement('main', { className: 'max-w-md mx-auto px-4 mt-8 space-y-8' },
-                    ['Copos Tradicionais', 'Copos Especiais', 'Lanches & Bebidas'].map(category =>
-                        React.createElement('div', { key: category },
-                            React.createElement('h3', { className: 'text-lg font-black text-[#6A0DAD] border-l-4 border-[#FFC107] pl-3 mb-4 uppercase tracking-tighter' }, category),
-                            React.createElement('div', { className: 'space-y-3' },
-                                PRODUCTS.filter(p => p.category === category).map(product =>
-                                    React.createElement('div', {
-                                        key: product.id,
-                                        onClick: () => handleProductClick(product),
-                                        className: 'product-card bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center cursor-pointer border border-white hover:border-[#6A0DAD]/20 active:bg-gray-50 active:scale-[0.98] transition-all'
-                                    },
-                                        React.createElement('div', { className: 'flex-1 pr-3' },
-                                            React.createElement('h4', { className: 'font-bold text-gray-900 text-[15px]' }, product.name),
-                                            product.description && React.createElement('p', { className: 'text-[11px] text-gray-500 mt-0.5 leading-snug' }, product.description),
-                                            React.createElement('span', { className: 'inline-block mt-1.5 text-[#6A0DAD] font-black text-base' },
-                                                product.type === 'especial' ? 'Desde ' : '',
-                                                'R$ ' + product.price.toFixed(2)
-                                            )
-                                        ),
-                                        React.createElement('div', { className: 'w-10 h-10 bg-[#F3E5F5] flex items-center justify-center rounded-xl text-[#6A0DAD] shrink-0' },
-                                            React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', className: 'h-6 w-6', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
-                                                React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 3, d: 'M12 6v6m0 0v6m0-6h6m-6 0H6' })
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ),
+                    {/* Main Content */}
+                    <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6 space-y-8 pb-32">
+                        {/* Hero */}
+                        <div className="relative rounded-3xl overflow-hidden h-44 sm:h-64 bg-acai shadow-xl">
+                            <img 
+                                src="banner_boom_nutella.png" 
+                                className="w-full h-full object-cover opacity-80" 
+                                onError={(e) => e.target.src = 'https://picsum.photos/1000/600'}
+                            />
+                            <div className="absolute inset-0 flex flex-col justify-center p-6 bg-gradient-to-r from-black/60 to-transparent">
+                                <h2 className="text-white text-3xl font-black mb-2 animate-pulse">BOOM!</h2>
+                                <p className="text-gold font-bold text-lg uppercase tracking-widest italic">O Açaí mais Cremoso do Brasil</p>
+                            </div>
+                        </div>
 
-                // Floating Cart Button
-                cart.length > 0 && React.createElement('button', {
-                    onClick: () => setIsCartOpen(true),
-                    className: 'fixed bottom-4 left-4 right-4 bg-[#6A0DAD] text-white py-4 rounded-2xl shadow-2xl z-30 flex items-center justify-between px-6 animate-fade-in border-2 border-white/10'
-                },
-                    React.createElement('div', { className: 'flex items-center gap-3' },
-                        React.createElement('span', { className: 'bg-white text-[#6A0DAD] px-2 py-0.5 rounded-lg text-xs font-black' }, cart.length),
-                        React.createElement('span', { className: 'font-bold text-base' }, 'Meu Carrinho')
-                    ),
-                    React.createElement('span', { className: 'font-black text-lg' }, 'R$ ' + cartTotal.toFixed(2))
-                ),
+                        {/* Menu Categories */}
+                        <div className="space-y-12">
+                            {categories.map(cat => (
+                                <section key={cat} id={cat.replace(/\s+/g, '-').toLowerCase()}>
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <h2 className="text-xl font-bold text-acai whitespace-nowrap">{cat}</h2>
+                                        <div className="h-[2px] w-full bg-gradient-to-r from-purple-200 to-transparent"></div>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                        {PRODUCTS.filter(p => p.category === cat).map(product => (
+                                            <ProductCard key={product.id} product={product} onAdd={openProductModal} />
+                                        ))}
+                                    </div>
+                                </section>
+                            ))}
+                        </div>
+                    </main>
 
-                // Selection Modal
-                selectedProduct && React.createElement('div', { className: 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4' },
-                    React.createElement('div', { className: 'fixed inset-0 bg-black/80 backdrop-blur-sm', onClick: () => setSelectedProduct(null) }),
-                    React.createElement('div', { className: 'relative bg-white w-full max-w-lg h-[85vh] sm:h-auto sm:max-h-[85vh] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col animate-fade-in shadow-2xl' },
-                        React.createElement('div', { className: 'p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10' },
-                            React.createElement('div', { className: 'pr-4' },
-                                React.createElement('h3', { className: 'font-black text-lg text-gray-900 leading-tight' }, selectedProduct.name),
-                                React.createElement('p', { className: 'text-[10px] text-gray-500 font-bold uppercase mt-0.5' }, selectedProduct.description)
-                            ),
-                            React.createElement('button', { onClick: () => setSelectedProduct(null), className: 'p-2 bg-gray-100 rounded-full shrink-0' },
-                                React.createElement('svg', { className: 'w-5 h-5 text-gray-900', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-                                    React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '3', d: 'M6 18L18 6M6 6l12 12' })
-                                )
-                            )
-                        ),
+                    {/* Floating Cart Button */}
+                    <button 
+                        onClick={() => setIsCartOpen(true)}
+                        className={`fixed bottom-6 right-6 z-50 bg-gold text-acai p-4 rounded-3xl shadow-2xl flex items-center gap-3 border-2 border-white transition-all transform hover:scale-105 active:scale-95 ${cart.length > 0 ? 'scale-110' : 'scale-100'}`}
+                    >
+                        <div className="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            {cart.length > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                                    {cart.reduce((a, b) => a + b.quantity, 0)}
+                                </span>
+                            )}
+                        </div>
+                        <span className="font-bold text-sm hidden sm:block">Ver Carrinho</span>
+                    </button>
 
-                        React.createElement('div', { className: 'flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6 pb-28' },
-                            // SPECIAL: Size Only
-                            selectedProduct.type === 'especial' && React.createElement('div', { className: 'animate-fade-in' },
-                                React.createElement('h4', { className: 'font-black text-gray-900 mb-3 uppercase text-xs tracking-wider flex items-center justify-between' },
-                                    'Tamanho',
-                                    React.createElement('span', { className: 'text-[9px] bg-[#FFC107] px-2 py-0.5 rounded text-gray-900 font-black' }, 'OBRIGATÓRIO')
-                                ),
-                                React.createElement('div', { className: 'grid grid-cols-2 gap-3' },
-                                    SPECIAL_SIZES.map(s =>
-                                        React.createElement('label', {
-                                            key: s.size,
-                                            className: `flex flex-col p-3 rounded-xl border-2 transition-all cursor-pointer ${tempSize?.size === s.size ? 'border-[#6A0DAD] bg-[#F3E5F5]' : 'border-gray-100 bg-white'}`
-                                        },
-                                            React.createElement('input', { type: 'radio', name: 'size', className: 'hidden', checked: tempSize?.size === s.size, onChange: () => setTempSize(s) }),
-                                            React.createElement('span', { className: 'font-black text-gray-900' }, s.size),
-                                            React.createElement('span', { className: 'text-[10px] text-[#6A0DAD] font-black' }, 'R$ ' + s.price.toFixed(2))
-                                        )
-                                    )
-                                )
-                            ),
+                    {/* Modals Logic */}
+                    {activeModal?.type === 'TRADICIONAL' && (
+                        <ModalTradicional 
+                            product={activeModal.product} 
+                            onClose={() => setActiveModal(null)} 
+                            onConfirm={addToCart} 
+                        />
+                    )}
+                    {activeModal?.type === 'ESPECIAL' && (
+                        <ModalEspecial 
+                            product={activeModal.product} 
+                            onClose={() => setActiveModal(null)} 
+                            onConfirm={addToCart} 
+                        />
+                    )}
+                    {activeModal?.type === 'HOTDOG' && (
+                        <ModalHotDog 
+                            product={activeModal.product} 
+                            onClose={() => setActiveModal(null)} 
+                            onConfirm={addToCart} 
+                        />
+                    )}
 
-                            // TRADICIONAL: Free & Paid
-                            selectedProduct.type === 'tradicional' && React.createElement('div', { className: 'animate-fade-in space-y-6' },
-                                React.createElement('div', null,
-                                    React.createElement('h4', { className: 'font-black text-gray-900 mb-1 uppercase text-xs tracking-wider flex items-center justify-between' },
-                                        'Grátis',
-                                        React.createElement('span', { className: 'text-[9px] bg-green-500 px-2 py-0.5 rounded text-white font-black' }, 'MÁX 4')
-                                    ),
-                                    React.createElement('p', { className: 'text-[10px] text-gray-400 mb-3 font-bold italic' }, 'Selecione até 4 acompanhamentos'),
-                                    React.createElement('div', { className: 'grid grid-cols-1 gap-1.5' },
-                                        FREE_ADDONS.map(addon => {
-                                            const isSelected = tempFreeAddons.includes(addon);
-                                            const isMax = tempFreeAddons.length >= 4;
-                                            return React.createElement('label', {
-                                                key: addon,
-                                                className: `flex items-center justify-between p-3 rounded-xl border-2 transition-all cursor-pointer ${isSelected ? 'border-[#6A0DAD] bg-[#F3E5F5]' : 'border-gray-50 bg-gray-50'} ${!isSelected && isMax ? 'opacity-30' : ''}`
-                                            },
-                                                React.createElement('span', { className: 'text-xs font-black text-gray-900' }, addon),
-                                                React.createElement('input', {
-                                                    type: 'checkbox',
-                                                    className: 'w-5 h-5 accent-[#6A0DAD]',
-                                                    checked: isSelected,
-                                                    disabled: !isSelected && isMax,
-                                                    onChange: () => {
-                                                        if (isSelected) setTempFreeAddons(prev => prev.filter(a => a !== addon));
-                                                        else if (!isMax) setTempFreeAddons(prev => [...prev, addon]);
-                                                    }
-                                                })
-                                            );
-                                        })
-                                    )
-                                ),
+                    {/* Cart Drawer */}
+                    <CartDrawer 
+                        cart={cart} 
+                        isOpen={isCartOpen} 
+                        onClose={() => setIsCartOpen(false)} 
+                        onUpdateQty={updateQuantity}
+                        onCheckout={handleCheckout}
+                    />
 
-                                React.createElement('div', null,
-                                    React.createElement('h4', { className: 'font-black text-gray-900 mb-1 uppercase text-xs tracking-wider' }, 'Adicionais Extras'),
-                                    React.createElement('p', { className: 'text-[10px] text-gray-400 mb-3 font-bold italic' }, 'Soma ao valor total'),
-                                    React.createElement('div', { className: 'grid grid-cols-1 gap-1.5' },
-                                        PAID_ADDONS.map(addon => {
-                                            const isSelected = tempPaidAddons.some(a => a.name === addon.name);
-                                            return React.createElement('label', {
-                                                key: addon.name,
-                                                className: `flex items-center justify-between p-3 rounded-xl border-2 transition-all cursor-pointer ${isSelected ? 'border-[#6A0DAD] bg-[#F3E5F5]' : 'border-gray-50 bg-gray-50'}`
-                                            },
-                                                React.createElement('div', { className: 'flex flex-col' },
-                                                    React.createElement('span', { className: 'text-xs font-black text-gray-900' }, addon.name),
-                                                    React.createElement('span', { className: 'text-[10px] text-[#6A0DAD] font-black' }, '+ R$ ' + addon.price.toFixed(2))
-                                                ),
-                                                React.createElement('input', {
-                                                    type: 'checkbox',
-                                                    className: 'w-5 h-5 accent-[#6A0DAD]',
-                                                    checked: isSelected,
-                                                    onChange: () => {
-                                                        if (isSelected) setTempPaidAddons(prev => prev.filter(a => a.name !== addon.name));
-                                                        else setTempPaidAddons(prev => [...prev, addon]);
-                                                    }
-                                                })
-                                            );
-                                        })
-                                    )
-                                )
-                            ),
-
-                            React.createElement('div', { className: 'pt-2' },
-                                React.createElement('h4', { className: 'font-black text-gray-900 mb-2 uppercase text-xs tracking-wider' }, 'Observações'),
-                                React.createElement('textarea', {
-                                    value: observations,
-                                    onChange: (e) => setObservations(e.target.value),
-                                    placeholder: 'Ex: sem granola, mandar colher...',
-                                    className: 'w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl text-xs font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-[#6A0DAD]',
-                                    rows: 2
-                                })
-                            )
-                        ),
-
-                        React.createElement('div', { className: 'absolute bottom-0 left-0 w-full p-4 bg-white border-t flex items-center justify-between gap-4' },
-                            React.createElement('div', { className: 'flex flex-col' },
-                                React.createElement('span', { className: 'text-[10px] text-gray-400 font-black uppercase' }, 'Subtotal'),
-                                React.createElement('span', { className: 'text-lg font-black text-[#6A0DAD]' }, 'R$ ' + ((selectedProduct.type === 'especial' ? (tempSize?.price || 0) : selectedProduct.price) + tempPaidAddons.reduce((a,c)=>a+c.price,0)).toFixed(2))
-                            ),
-                            React.createElement('button', {
-                                onClick: handleAddToCartModal,
-                                disabled: selectedProduct.type === 'especial' && !tempSize,
-                                className: 'flex-1 bg-[#6A0DAD] text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest active:scale-95 transition-transform disabled:bg-gray-200'
-                            }, 'Adicionar')
-                        )
-                    )
-                ),
-
-                // Cart Checkout Modal
-                isCartOpen && React.createElement('div', { className: 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4' },
-                    React.createElement('div', { className: 'fixed inset-0 bg-black/80 backdrop-blur-sm', onClick: () => setIsCartOpen(false) }),
-                    React.createElement('div', { className: 'relative bg-white w-full max-w-lg h-[95vh] sm:h-auto sm:max-h-[90vh] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col animate-fade-in shadow-2xl' },
-                        React.createElement('div', { className: 'p-4 border-b flex flex-col items-center bg-white sticky top-0 z-10' },
-                            React.createElement('div', { className: 'w-12 h-12 mb-1 rounded-full shadow-md border-2 border-[#F3E5F5] bg-[#6A0DAD]' }),
-                            React.createElement('h3', { className: 'font-black text-xl text-[#6A0DAD] uppercase tracking-tighter' }, 'Resumo do Pedido'),
-                            React.createElement('button', { onClick: () => setIsCartOpen(false), className: 'absolute top-4 right-4 p-2 bg-gray-100 rounded-full text-gray-900' },
-                                React.createElement('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-                                    React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '3', d: 'M6 18L18 6M6 6l12 12' })
-                                )
-                            )
-                        ),
-
-                        React.createElement('div', { className: 'flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar' },
-                            React.createElement('div', { className: 'space-y-3' },
-                                cart.map(item =>
-                                    React.createElement('div', { key: item.cartId, className: 'flex justify-between items-center bg-gray-50 border border-gray-100 p-4 rounded-xl' },
-                                        React.createElement('div', { className: 'flex-1' },
-                                            React.createElement('div', { className: 'flex items-center gap-2' },
-                                                React.createElement('span', { className: 'font-black text-gray-900 text-sm' }, item.quantity + 'x ' + item.name),
-                                                item.selectedSize && React.createElement('span', { className: 'text-[9px] bg-[#6A0DAD] text-white px-2 py-0.5 rounded font-black' }, item.selectedSize)
-                                            ),
-                                            React.createElement('span', { className: 'text-sm font-black text-[#6A0DAD] mt-0.5 block' }, 'R$ ' + (item.totalPrice * item.quantity).toFixed(2))
-                                        ),
-                                        React.createElement('button', { onClick: () => removeFromCart(item.cartId), className: 'p-2 text-red-500' },
-                                            React.createElement('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-                                                React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '2', d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' })
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
-
-                            React.createElement('form', { id: 'checkoutForm', className: 'space-y-4 pt-4 border-t-2 border-gray-100', onSubmit: (e) => {
-                                e.preventDefault();
-                                const formData = new FormData(e.currentTarget);
-                                sendWhatsApp({
-                                    name: formData.get('name'),
-                                    address: formData.get('address'),
-                                    payment: formData.get('payment'),
-                                    troco: formData.get('troco')
-                                });
-                            }},
-                                React.createElement('div', { className: 'space-y-3' },
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'block text-[10px] font-black text-[#6A0DAD] mb-1 uppercase tracking-widest' }, 'Nome Completo'),
-                                        React.createElement('input', { required: true, name: 'name', type: 'text', placeholder: 'Seu nome', className: 'w-full p-3 bg-white border-2 border-gray-100 rounded-xl text-xs font-black text-gray-900 outline-none focus:border-[#6A0DAD]' })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'block text-[10px] font-black text-[#6A0DAD] mb-1 uppercase tracking-widest' }, 'Endereço'),
-                                        React.createElement('input', { required: true, name: 'address', type: 'text', placeholder: 'Rua, número e bairro', className: 'w-full p-3 bg-white border-2 border-gray-100 rounded-xl text-xs font-black text-gray-900 outline-none focus:border-[#6A0DAD]' })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'block text-[10px] font-black text-[#6A0DAD] mb-1 uppercase tracking-widest' }, 'Pagamento'),
-                                        React.createElement('select', { required: true, name: 'payment', className: 'w-full p-3 bg-white border-2 border-gray-100 rounded-xl text-xs font-black text-gray-900 outline-none focus:border-[#6A0DAD]', onChange: (e) => {
-                                            const trocoField = document.getElementById('trocoContainer');
-                                            if (e.target.value === 'Dinheiro') trocoField?.classList.remove('hidden');
-                                            else trocoField?.classList.add('hidden');
-                                        }},
-                                            React.createElement('option', { value: '' }, 'Escolha como pagar...'),
-                                            React.createElement('option', { value: 'Pix' }, 'Pix (Na Entrega)'),
-                                            React.createElement('option', { value: 'Cartão' }, 'Cartão (Máquina)'),
-                                            React.createElement('option', { value: 'Dinheiro' }, 'Dinheiro')
-                                        )
-                                    ),
-                                    React.createElement('div', { id: 'trocoContainer', className: 'hidden bg-yellow-50 p-3 rounded-xl border border-yellow-200' },
-                                        React.createElement('label', { className: 'block text-[9px] font-black text-yellow-800 mb-1 uppercase tracking-widest' }, 'Troco para quanto?'),
-                                        React.createElement('input', { name: 'troco', type: 'text', placeholder: 'R$ 50,00', className: 'w-full p-2 bg-white border border-yellow-300 rounded-lg text-xs font-bold text-gray-900 outline-none' })
-                                    )
-                                )
-                            )
-                        ),
-
-                        React.createElement('div', { className: 'p-5 bg-white border-t sticky bottom-0' },
-                            React.createElement('div', { className: 'flex justify-between items-center mb-4' },
-                                React.createElement('span', { className: 'text-gray-500 font-black text-sm uppercase' }, 'Total'),
-                                React.createElement('span', { className: 'text-2xl font-black text-[#6A0DAD]' }, 'R$ ' + cartTotal.toFixed(2))
-                            ),
-                            React.createElement('button', {
-                                form: 'checkoutForm',
-                                type: 'submit',
-                                className: 'w-full bg-[#6A0DAD] text-white py-4 rounded-xl font-black text-base flex items-center justify-center gap-3 active:scale-95 shadow-xl'
-                            }, 'Finalizar Pedido')
-                        )
-                    )
-                )
+                    {/* Footer */}
+                    <footer className="bg-gray-900 text-white p-8 pb-32 sm:pb-8">
+                        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-8">
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold text-gold">BOOM Açaiteria</h3>
+                                <p className="text-sm text-gray-400 max-w-xs">Oferecemos o açaí mais cremoso e acompanhamentos selecionados para sua explosão de sabores.</p>
+                                <div className="flex gap-4">
+                                    <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold hover:text-acai transition-colors">
+                                        <lucide-icon name="instagram"></lucide-icon>
+                                    </button>
+                                    <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold hover:text-acai transition-colors">
+                                        <lucide-icon name="phone"></lucide-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-bold">Horários</h3>
+                                <ul className="text-sm text-gray-400 space-y-2">
+                                    <li className="flex justify-between gap-8"><span>Seg - Sab</span> <span>14:00 - 23:59</span></li>
+                                    <li className="flex justify-between gap-8"><span>Domingo</span> <span>16:00 - 23:59</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="max-w-5xl mx-auto pt-8 mt-8 border-t border-white/10 text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                            © 2024 BOOM Açaiteria - Todos os direitos reservados.
+                        </div>
+                    </footer>
+                </div>
             );
-        }
+        };
 
-        // ========== RENDERIZAÇÃO ==========
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(App));
+        root.render(<App />);
+        
+        // Inicializa ícones Lucide após o render
+        setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>
 </html>
